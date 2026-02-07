@@ -106,10 +106,10 @@ edge_block /= np.percentile(edge_block, 95)
 edge_block = np.clip(edge_block, 0, 1)
 
 ###############################
-# Mona Lisa Palette (same as first script)
+# Palette
 ###############################
 
-def generate_mona_lisa_palette():
+def generate_palette():
     tiles = []
     brightness_vals = []
 
@@ -123,7 +123,7 @@ def generate_mona_lisa_palette():
     brightness_vals = np.array(brightness_vals)
     return tiles, brightness_vals
 
-colored_tiles, brightness_values = generate_mona_lisa_palette()
+colored_tiles, brightness_values = generate_palette()
 
 normalized_brightness = (brightness_values - brightness_values.min()) / \
                         (brightness_values.max() - brightness_values.min()) * 9
