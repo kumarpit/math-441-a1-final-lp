@@ -11,8 +11,8 @@ import uuid
 # Problem Dimensions
 ###############################
 
-NUM_ROWS = 40
-NUM_COLS = 30
+NUM_ROWS = 20
+NUM_COLS = 20
 BLOCK_SIZE = 8
 NUM_COLORS = 10
 SCALES = [1, 2, 4, 8]
@@ -86,7 +86,7 @@ for i in range(NUM_ROWS):
             i*BLOCK_SIZE:(i+1)*BLOCK_SIZE,
             j*BLOCK_SIZE:(j+1)*BLOCK_SIZE
         ]
-        block_brightness[i,j] = round(block.mean() / 255.0 * 9)
+        block_brightness[i,j] = round(block.mean() / 255.0 * (NUM_COLORS - 1))
 
 # apply the Laplacian operator to the image to get an "edge map" (i.e pixels that are around edges 
 # in the image get a high value, while pixels in a relatively flat region get a low value)
@@ -124,7 +124,7 @@ colored_tiles, brightness_values = generate_tiles()
 
 # Brings all brightness values in the discrete range [0, 9]
 normalized_brightness = (brightness_values - brightness_values.min()) / \
-                        (brightness_values.max() - brightness_values.min()) * 9
+                        (brightness_values.max() - brightness_values.min()) * (NUM_COLORS - 1)
 
 ###############################
 # Placement generation

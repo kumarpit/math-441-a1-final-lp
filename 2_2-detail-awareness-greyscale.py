@@ -41,7 +41,7 @@ colored_tiles, brightness_values = generate_grayscale_tiles(
 
 # Brings all brightness values in the discrete range [0, 9]
 normalized_brightness = (brightness_values - brightness_values.min()) / \
-                        (brightness_values.max() - brightness_values.min()) * 9
+                        (brightness_values.max() - brightness_values.min()) * (NUM_COLORS - 1)
 
 ###############################
 # Load target image 
@@ -61,7 +61,7 @@ for i in range(NUM_ROWS):
         block = img_array[i*BLOCK_SIZE:(i+1)*BLOCK_SIZE,
                           j*BLOCK_SIZE:(j+1)*BLOCK_SIZE]
         # again, bring the brightness value in the discrete range [0, 9]
-        block_brightness[i,j] = round(block.mean() / 255.0 * 9)
+        block_brightness[i,j] = round(block.mean() / 255.0 * (NUM_COLORS - 1))
 
 # apply the Laplacian operator to the image to get an "edge map" (i.e pixels that are around edges 
 # in the image get a high value, while pixels in a relatively flat region get a low value)

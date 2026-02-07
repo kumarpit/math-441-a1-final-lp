@@ -87,7 +87,7 @@ for i in range(NUM_ROWS):
     for j in range(NUM_COLS):
         block = img_arr[i*BLOCK_SIZE:(i+1)*BLOCK_SIZE,
                         j*BLOCK_SIZE:(j+1)*BLOCK_SIZE]
-        block_brightness[i,j] = round(block.mean() / 255.0 * 9)
+        block_brightness[i,j] = round(block.mean() / 255.0 * (NUM_COLORS - 1))
 
 ###############################
 # Edge map
