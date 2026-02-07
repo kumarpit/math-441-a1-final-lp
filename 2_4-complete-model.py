@@ -27,14 +27,14 @@ np.random.seed(42)
 ###############################
 
 class Polyomino:
-    def __init__(self, name, cells):
+    def __init__(self, name, blocks):
         self.name = name
-        self.cells = cells
-        self.height = max(r for r,c in cells) + 1
-        self.width  = max(c for r,c in cells) + 1
+        self.blocks = blocks
+        self.height = max(r for r,c in blocks) + 1
+        self.width  = max(c for r,c in blocks) + 1
 
     def rotate(self):
-        rotated = [(c, -r) for r,c in self.cells]
+        rotated = [(c, -r) for r,c in self.blocks]
         min_r = min(r for r,c in rotated)
         min_c = min(c for r,c in rotated)
         rotated = [(r-min_r, c-min_c) for r,c in rotated]
@@ -44,7 +44,7 @@ class Polyomino:
         rots = []
         s = self
         for _ in range(4):
-            if not any(set(s.cells) == set(r.cells) for r in rots):
+            if not any(set(s.blocks) == set(r.blocks) for r in rots):
                 rots.append(s)
             s = s.rotate()
         return rots
@@ -133,18 +133,18 @@ normalized_brightness = (brightness_values - brightness_values.min()) / \
 ###############################
 
 placements = []
-cell_to_placements = defaultdict(list)
+block_to_placements = defaultdict(list)
 
-def expanded_cells(shape, scale, anchor):
+def expanded_blocks(shape, scale, anchor):
     ai, aj = anchor
-    cells = []
-    for dr, dc in shape.cells:
+    blocks = []
+    for dr, dc in shape.blocks:
         for u in range(scale):
             for v in range(scale):
                 i = ai + dr*scale + u
                 j = aj + dc*scale + v
-                cells.append((i,j))
-    return cells
+                blocks.append((i,j))
+    return blocks
 
 for c in range(NUM_COLORS):
     base = color_to_polyomino[c]
@@ -154,11 +154,11 @@ for c in range(NUM_COLORS):
             max_j = NUM_COLS - shape.width*S
             for i in range(max_i + 1):
                 for j in range(max_j + 1):
-                    cells = expanded_cells(shape, S, (i,j))
+                    blocks = expanded_blocks(shape, S, (i,j))
                     p = len(placements)
-                    placements.append((c, shape, S, (i,j), cells))
-                    for cell in cells:
-                        cell_to_placements[cell].append(p)
+                    placements.append((c, shape, S, (i,j), blocks))
+                    for block in blocks:
+                        block_to_placements[block].append(p)
 
 NUM_PLACEMENTS = len(placements)
 print("Total placements:", NUM_PLACEMENTS)
@@ -172,7 +172,7 @@ x = cp.Variable(NUM_PLACEMENTS, boolean=True)
 constraints = []
 for i in range(NUM_ROWS):
     for j in range(NUM_COLS):
-        constraints.append(cp.sum(x[cell_to_placements[(i,j)]]) == 1)
+        constraints.append(cp.sum(x[block_to_placements[(i,j)]]) == 1)
 
 ###############################
 # Objective
@@ -180,14 +180,14 @@ for i in range(NUM_ROWS):
 
 costs = np.zeros(NUM_PLACEMENTS)
 
-for p, (c, shape, S, (i,j), cells) in enumerate(placements):
+for p, (c, shape, S, (i,j), blocks) in enumerate(placements):
     err = 0
     max_edge = 0
-    for (ii,jj) in cells:
+    for (ii,jj) in blocks:
         err += (normalized_brightness[c]-block_brightness[ii,jj])**2
         max_edge = max(max_edge, edge_block[ii,jj])
 
-    err /= len(cells)
+    err /= len(blocks)
     edge_pen = EDGE_WEIGHT * max_edge * (S-1)**2
     size_bonus = -SIZE_BONUS * (S-1)
 
@@ -212,29 +212,29 @@ draw = ImageDraw.Draw(result)
 
 for p, val in enumerate(x.value):
     if val > 0.5:
-        c, shape, S, (i,j), cells = placements[p]
-        cell_set = set(cells)
+        c, shape, S, (i,j), blocks = placements[p]
+        block_set = set(blocks)
 
-        for (ii,jj) in cells:
+        for (ii,jj) in blocks:
             result.paste(
                 colored_tiles[c],
                 (jj*BLOCK_SIZE, ii*BLOCK_SIZE)
             )
 
         # borders
-        for (ii,jj) in cells:
+        for (ii,jj) in blocks:
             x0 = jj * BLOCK_SIZE
             y0 = ii * BLOCK_SIZE
             x1 = x0 + BLOCK_SIZE
             y1 = y0 + BLOCK_SIZE
 
-            if (ii-1, jj) not in cell_set:
+            if (ii-1, jj) not in block_set:
                 draw.line([(x0,y0),(x1,y0)], fill=(0,0,0), width=2)
-            if (ii+1, jj) not in cell_set:
+            if (ii+1, jj) not in block_set:
                 draw.line([(x0,y1),(x1,y1)], fill=(0,0,0), width=2)
-            if (ii, jj-1) not in cell_set:
+            if (ii, jj-1) not in block_set:
                 draw.line([(x0,y0),(x0,y1)], fill=(0,0,0), width=2)
-            if (ii, jj+1) not in cell_set:
+            if (ii, jj+1) not in block_set:
                 draw.line([(x1,y0),(x1,y1)], fill=(0,0,0), width=2)
 
 result.save(OUTPUT_IMAGE)
