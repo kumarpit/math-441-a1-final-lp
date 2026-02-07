@@ -76,7 +76,7 @@ for i in range(NUM_ROWS):
         # taking just the mean would produce a misleading edge map
         edge_block[i,j] = np.mean(np.abs(block))
 # normalize mean laplacians to be in the range [0, 1]
-edge_block /= np.percentile(edge_block, 95)
+edge_block /= np.max(edge_block)
 edge_block = np.clip(edge_block, 0, 1)
 print(edge_block)
 

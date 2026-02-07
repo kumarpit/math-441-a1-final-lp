@@ -102,7 +102,7 @@ for i in range(NUM_ROWS):
                               j*BLOCK_SIZE:(j+1)*BLOCK_SIZE]
         edge_block[i,j] = np.mean(np.abs(block))
 
-edge_block /= np.percentile(edge_block, 95)
+edge_block /= np.max(edge_block)
 edge_block = np.clip(edge_block, 0, 1)
 
 ###############################
