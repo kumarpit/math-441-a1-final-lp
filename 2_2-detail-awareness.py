@@ -12,8 +12,8 @@ import json
 ###############################
 
 NUM_ROWS = 30 
-NUM_COLS = 30 
-TILE_SIZES = [1, 2, 4, 8]
+NUM_COLS = 45 
+TILE_SIZES = [1, 2, 4]
 BLOCK_SIZE = 8
 EDGE_WEIGHT = 4.0
 TILE_BONUS = 2.0
@@ -22,7 +22,7 @@ TILE_BONUS = 2.0
 # Generating tiles 
 ###############################
 
-PALETTE_CONFIG = os.path.join(os.path.dirname(__file__), "colors/a-girl-with-pearl-earrings-colors.json")
+PALETTE_CONFIG = os.path.join(os.path.dirname(__file__), "colors/starry-night.json")
 
 with open(PALETTE_CONFIG, "r") as f:
     palette_data = json.load(f)
@@ -55,7 +55,7 @@ normalized_brightness = (brightness_values - brightness_values.min()) / \
 # Load target image 
 ###############################
 
-TARGET_IMAGE_PATH = os.path.join(os.path.dirname(__file__), 'sources/pearl_earring.jpg')
+TARGET_IMAGE_PATH = os.path.join(os.path.dirname(__file__), 'sources/starry-night.jpg')
 OUTPUT_IMAGE = f"output/edge-aware-v0-{uuid.uuid4().hex}.png"
 
 greyscale_img = Image.open(TARGET_IMAGE_PATH).convert('L')

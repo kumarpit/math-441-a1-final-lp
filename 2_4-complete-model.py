@@ -12,10 +12,10 @@ import json
 # Problem Dimensions
 ###############################
 
-NUM_ROWS = 20
-NUM_COLS = 10
+NUM_ROWS = 30
+NUM_COLS = 45
 BLOCK_SIZE = 8
-SCALES = [1, 2, 4, 8]
+SCALES = [1, 2, 4]
 EDGE_WEIGHT = 5.0
 SIZE_BONUS = 2.0
 
@@ -51,13 +51,16 @@ class Polyomino:
 
 POLYOMINOES = [
     Polyomino("L",  [(0,0),(0,1),(1,0)]),
+    Polyomino("I3", [(0,0),(0,1),(0,2)]),
+    Polyomino("D2h",[(0,0),(0,1)]),
+    Polyomino("D2v",[(0,0),(1,0)])
 ]
 
 ###############################
 # Load palette config
 ###############################
 
-PALETTE_CONFIG = os.path.join(os.path.dirname(__file__), "colors/mona-lisa-colors.json")
+PALETTE_CONFIG = os.path.join(os.path.dirname(__file__), "colors/starry-night.json")
 
 with open(PALETTE_CONFIG, "r") as f:
     palette_data = json.load(f)
@@ -75,7 +78,7 @@ color_to_polyomino = {
 # Load target image 
 ###############################
 
-TARGET_IMAGE_PATH = os.path.join(os.path.dirname(__file__), 'sources/mona-lisa.jpg')
+TARGET_IMAGE_PATH = os.path.join(os.path.dirname(__file__), 'sources/starry-night.jpg')
 OUTPUT_IMAGE = f"output/edge-aware-v1-monalisa-{uuid.uuid4().hex}.png"
 
 img = Image.open(TARGET_IMAGE_PATH).convert("L")
